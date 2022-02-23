@@ -59,6 +59,9 @@ while x == True: #continue to run script after prompted when complete
         else: # not noticing input
             print("You're on your own!")
   
+    else:
+        print("That was not the correct input")
+
     tryagain = input("Would you like to look again?(Yes/No) ").lower() # Prompt to either start loop again or exit script
     if tryagain == "yes":
         x = True
