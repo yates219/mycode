@@ -13,11 +13,12 @@ with open("cars.csv", "r") as carfile:
                 cheapest = x
                 print(f"The cheapest car is {x}")
 
-    if question == "expensive":
+    elif question == "expensive":
         for row in carlist:
             x= float(row["Price"])
             if x > highest:
                 highest = x 
                 print(f"The most expensive car is {x}")
-            print(x)
+    else:
+        print("Please input a correct choice")
             
