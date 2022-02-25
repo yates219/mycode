@@ -2,12 +2,10 @@
 
 import pandas as pd
 
-cars = pd.read_csv('cars.csv')
+cars = pd.read_csv('cars.csv') # creates a DF
 
-cheapest = cars["Price"].min()
-expensive = cars["Price"].max()
-
-x = "yes"
+cheapest = cars["Price"].min() # this gathers the lowest value of price in the file
+expensive = cars["Price"].max() # this gathers the highest value
 
 def main():
     
