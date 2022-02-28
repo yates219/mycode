@@ -15,9 +15,9 @@ def main():
     groundctrl = requests.get(MAJORTOM)
     
     # Convert into dictionary
-    astronauts = groundctrl.json()
+    #astronauts = groundctrl.json()
 
-    for x in astronauts['people']:
+    for x in groundctrl.json()['people']:
         print(f"{x['name']} is on the {x['craft']}")
 
 if __name__ == "__main__":
