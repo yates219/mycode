@@ -8,20 +8,20 @@ from cheatdice import *
 def main():
     """called at runtime"""
 
-    # the player known as the swapper
+    # the player known as the swapper or cheater1
     swapper = Cheat_Swapper()
-    # the player known as the loaded_dice
+    # the player known as the loaded_dice or cheater2
     loaded_dice = Cheat_Loaded_Dice()
 
-    # track scores for both players
+    # track scores for both players and draws
     swapper_score = 0
     loaded_dice_score = 0
     draw_score = 0
-    # how many games we want to run
+    # how many games we want to run and initial count at 0
     number_of_games = 1000000
     game_number = 0
 
-    # begin!
+    # Will continue to play games until number of games is met
     print("Simulation running")
     print("==================")
     while game_number < number_of_games:
