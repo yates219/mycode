@@ -2,6 +2,9 @@
 
 # RPG that allows user to move around various rooms. Winning requires obtaining and consuming certain items and killing certain monsters.
 
+import random
+import time
+
 def showInstructions():
     # Print a main menu and the commands
     print('''
@@ -63,6 +66,43 @@ def hint():
     if 'cookie' in consumed and 'death' not in rooms['Cellar'] and 'key' in inventory and 'map' in inventory:
         print("The Garden seems like a good escape")
 
+# Implements combat
+def combat():
+
+    # Starting health for player and enemy
+    player_health = 50
+    enemy_health = 50
+    
+    # Creates a combat loop that goes until player or enemy die
+    while player_health > 0 and enemy_health > 0:
+        if 'knife' in inventory:
+            player_attack = random.randint(10,20) # Generates random attack damage from 10-20
+            enemy_attack = random.randint(5,10)   # Generates random enemy attack damage from 5-10
+            enemy_health -= player_attack         # Removes player damage dealt from enemy health
+            time.sleep(.5)                        # Slows output
+            print(f"You hit the monster for {player_attack} damage!")
+            player_health -= enemy_attack         # Removes enemy damage dealt from player health
+            time.sleep(.5)                        # Slows output
+            print(f"The monster hit you for {enemy_attack} damage!")
+            if enemy_health <= 0:                 # If player kills the monster, it will delete monster from room
+                print('You defeated the monster!')
+                del rooms[currentRoom]['death']
+            
+        else:
+            player_attack = random.randint(1,5) # Generates random attack damage from 1-5
+            enemy_attack = random.randint(6,10) # Generates random enemy attack damage from 6-10
+            enemy_health -= player_attack       # Removes player damage dealt from enemy health
+            time.sleep(.5)
+            print(f"You hit the monster for {player_attack} damage!")
+            player_health -= enemy_attack       # Removes enemy damage dealth from player health
+            time.sleep(.5)
+            print(f"The monster hit you for {enemy_attack} damage!")
+            if player_health <= 0:              # Kills you when you lose the fight
+                print("The monster killed you! Better get a weapon next time!")
+                player = 'dead'
+                break
+
+            
 # Creates an inventory and consumed area, initially empty
 inventory = []
 consumed = []
@@ -108,10 +148,12 @@ rooms = {
 # Start the player in the Hall
 currentRoom = 'Hall'
 
+player = 'alive'
+
 showInstructions()
 
 # Loop forever
-while True:
+while True and player == 'alive':
 
     showStatus()
 
@@ -121,7 +163,7 @@ while True:
     # ['go','east']
     move = ''
     while move == '':
-        move = input('>')
+        move = input('>').lower()
 
     # Split allows an items to have a space on them
     # Get golden key is returned ["get", "golden key"]          
@@ -194,13 +236,20 @@ while True:
         print('You killed the Monster and escaped the house with the ultra rare key and map...all while getting a snack. YOU WIN!')
         break
 
-    # Killing the monster
-    elif currentRoom == 'Cellar' and 'knife' in inventory:
-        print('A Monster appeared and you stabbed it with your knife, killing it!')
-        del rooms[currentRoom]['death'] # Deletes the monster from the room so you can win
-        inventory.remove('knife') # Destroys knife after being used
+    # Fighting the monster 
+    elif currentRoom == 'Cellar':
+        fight = input('A monster appeared! Do you wish to fight or run? ').lower()
+        if fight == 'fight':
+            combat()
+
+        else:
+            print('You successfully escaped!')
+            currentRoom = 'Pantry'
+            #print('A Monster appeared and you stabbed it with your knife, killing it!')
+            #del rooms[currentRoom]['death'] # Deletes the monster from the room so you can win
+            #inventory.remove('knife') # Destroys knife after being used
 
     # If a player enters a room with a monster
-    elif 'death' in rooms[currentRoom] and 'monster' in rooms[currentRoom]['death']:
-        print('A monster has got you... GAME OVER! Try finding a weapon next time! ')
-        break
+    #elif 'death' in rooms[currentRoom] and 'monster' in rooms[currentRoom]['death']:
+       # print('A monster has got you... GAME OVER! Try finding a weapon next time! ')
+       # break
