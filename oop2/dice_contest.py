@@ -8,17 +8,20 @@ from cheatdice import *
 def main():
     """called at runtime"""
 
-    # the player known as the swapper or cheater1
+    # the player known as the swapper
     swapper = Cheat_Swapper()
-    # the player known as the loaded_dice or cheater2
+    # the player known as the loaded_dice
     loaded_dice = Cheat_Loaded_Dice()
+    # the player known as the mega_swaploader
+    mega_swaploader = Cheat_Mega_Swaploader()
 
     # track scores for both players and draws
     swapper_score = 0
     loaded_dice_score = 0
+    mega_swaploader_score = 0
     draw_score = 0
     # how many games we want to run and initial count at 0
-    number_of_games = 1000000
+    number_of_games = 100000
     game_number = 0
 
     # Will continue to play games until number of games is met
@@ -27,9 +30,11 @@ def main():
     while game_number < number_of_games:
         swapper.roll()
         loaded_dice.roll()
+        mega_swaploader.roll()
 
         swapper.cheat()
         loaded_dice.cheat()
+        mega_swaploader.cheat()
         """Remove # before print statements to see simulation running
            Simulation takes approximately one hour to run with print
            statements or ten seconds with print statements
@@ -40,9 +45,11 @@ def main():
         if sum(swapper.get_dice()) == sum(loaded_dice.get_dice()):
             #print("Draw!")
             draw_score += 1
-        elif sum(swapper.get_dice()) > sum(loaded_dice.get_dice()):
+        elif sum(swapper.get_dice()) > sum(loaded_dice.get_dice()) and sum(swapper.get_dice()) > sum(mega_swaploader.get_dice()):
             #print("Dice swapper wins!")
             swapper_score+= 1
+        elif sum(mega_swaploader.get_dice()) > sum(loaded_dice.get_dice()) and sum(mega_swaploader.get_dice()) > sum(swapper.get_dice()):
+            mega_swaploader_score += 1
         else:
             #print("Loaded dice wins!")
             loaded_dice_score += 1
@@ -55,13 +62,16 @@ def main():
     print("------------")
     print(f"Swapper won: {swapper_score}")
     print(f"Loaded dice won: {loaded_dice_score}")
+    print(f"Mega Swaploader won: {mega_swaploader_score}")
     print(f"Draws: {draw_score}")
 
     # determine the winner
-    if swapper_score == loaded_dice_score:
+    if swapper_score == loaded_dice_score and swapper_score == mega_swaploader_score:
         print("Game was drawn")
-    elif swapper_score > loaded_dice_score:
+    elif swapper_score > loaded_dice_score and swapper_score > mega_swaploader_score:
         print("Swapper won most games")
+    elif mega_swaploader_score > swapper_score and mega_swaploader_score > loaded_dice_score:
+        print("Mega Swaploader won most games")
     else:
         print("Loaded dice won most games")
 

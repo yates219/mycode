@@ -31,3 +31,11 @@ class Cheat_Loaded_Dice(Player): # inheritance of Player
               self.dice[i] += 1
           i += 1
 
+class Cheat_Mega_Swaploader(Player):
+    def cheat(self):
+        self.dice =[6, 6, 6]
+        i = 0
+        while i < len(self.dice):
+            if self.dice[i] == 6:
+                self.dice[i] -= randint(0,3)
+            i += 1
