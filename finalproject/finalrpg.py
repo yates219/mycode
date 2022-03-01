@@ -11,7 +11,7 @@ def showInstructions():
 RPG Game
 ========
 Commands:
-    go [direction]
+    go [direction] (North, South, East, West)
     get [item]
     eat [item]
     hint (Type at anytime for a hint)
@@ -48,7 +48,7 @@ def hint():
     
     # Display hint to eat cookie
     if 'cookie' not in consumed:
-        print('You seem to be hungry')
+        print('You are hungry')
 
     # Display hint to kill monster
     if 'death' in rooms['Cellar']:
@@ -68,7 +68,7 @@ def hint():
 
 # Implements combat
 def combat():
-
+    global player
     # Starting health for player and enemy
     player_health = 50
     enemy_health = 50
@@ -86,8 +86,9 @@ def combat():
             print(f"The monster hit you for {enemy_attack} damage!")
             if enemy_health <= 0:                 # If player kills the monster, it will delete monster from room
                 print('You defeated the monster!')
-                del rooms[currentRoom]['death']
-            
+                
+                 
+                    
         else:
             player_attack = random.randint(1,5) # Generates random attack damage from 1-5
             enemy_attack = random.randint(6,10) # Generates random enemy attack damage from 6-10
@@ -100,7 +101,7 @@ def combat():
             if player_health <= 0:              # Kills you when you lose the fight
                 print("The monster killed you! Better get a weapon next time!")
                 player = 'dead'
-                break
+                
 
             
 # Creates an inventory and consumed area, initially empty
@@ -113,7 +114,6 @@ rooms = {
             'Hall' : {
                   'south' : 'Kitchen',
                   'east'  : 'Dining Room',
-                  'item'  : 'key'
                      },
 
             'Kitchen' : {
@@ -164,7 +164,7 @@ while True and player == 'alive':
     move = ''
     while move == '':
         move = input('>').lower()
-
+        print("---------------------------")
     # Split allows an items to have a space on them
     # Get golden key is returned ["get", "golden key"]          
     move = move.lower().split(" ", 1)
@@ -183,7 +183,7 @@ while True and player == 'alive':
             print('You can\'t go that way!')
 
         # If they type 'get' first
-    if move[0] == 'get' :
+    elif move[0] == 'get' :
         
         # If the room contains an item, and the item is the one they want to get
         if "item" in rooms[currentRoom] and move[1] in rooms[currentRoom]['item']:
@@ -192,7 +192,7 @@ while True and player == 'alive':
             inventory.append(move[1])
             
             # Display a helpful message
-            print(move[1] + ' obtained!')
+            print(move[1].capitalize() + ' obtained!')
             
             # Delete the item from the room
             del rooms[currentRoom]['item']
@@ -203,7 +203,7 @@ while True and player == 'alive':
             print('Can\'t get ' + move[1] + '!')
       
     # If they type eat
-    if move[0] == 'eat':
+    elif move[0] == 'eat':
         
         # If the room contains a consumable
         if 'consumable' in rooms[currentRoom] and move[1] in rooms[currentRoom]['consumable']:
@@ -212,7 +212,7 @@ while True and player == 'alive':
             consumed.append(move[1])
             
             # Tell them they consumed
-            print(move[1] + ' eaten!')
+            print(move[1].capitalize() + ' eaten!')
             
             # Remove the consumable from room
             del rooms[currentRoom]['consumable']
@@ -222,8 +222,12 @@ while True and player == 'alive':
             print('Can\'t eat ' + move[1] + '!')
     
     # If the user needs a hint
-    if move[0] == 'hint':
+    elif move[0] == 'hint':
         hint()
+
+    # If the user inputs something incorrectly
+    else:
+        print("I don't recognize that command")
 
     # Dying from eating deathberry...duh
     if 'deathberry' in consumed:
@@ -237,19 +241,18 @@ while True and player == 'alive':
         break
 
     # Fighting the monster 
-    elif currentRoom == 'Cellar':
+    elif currentRoom == 'Cellar' and 'death' in rooms['Cellar']:
         fight = input('A monster appeared! Do you wish to fight or run? ').lower()
         if fight == 'fight':
             combat()
-
+            if player == 'alive':
+                del rooms['Cellar']['death']
+                pickup = input("Hmm the monster dropped something...Would you like to pick it up? (Yes/No) ").lower()
+                if pickup == 'yes':
+                    print("Key obtained!")
+                    inventory.append('key')
+                else:
+                    rooms['Cellar'].update({'item':'key'})
         else:
             print('You successfully escaped!')
             currentRoom = 'Pantry'
-            #print('A Monster appeared and you stabbed it with your knife, killing it!')
-            #del rooms[currentRoom]['death'] # Deletes the monster from the room so you can win
-            #inventory.remove('knife') # Destroys knife after being used
-
-    # If a player enters a room with a monster
-    #elif 'death' in rooms[currentRoom] and 'monster' in rooms[currentRoom]['death']:
-       # print('A monster has got you... GAME OVER! Try finding a weapon next time! ')
-       # break
