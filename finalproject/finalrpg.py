@@ -12,6 +12,7 @@ RPG Game
 ========
 Commands:
     go [direction] (North, South, East, West)
+    look (See what is in current room)
     get [item]
     eat [item]
     hint (Type at anytime for a hint)
@@ -29,20 +30,32 @@ def showStatus():
     # Print any items consumed
     print('Consumed: ' + str(consumed))
 
-    # Shows items in room
-    if "item" in rooms[currentRoom]:
-        print('You see a ' + rooms[currentRoom]['item'])
-        print("---------------------------")
-
-    # Shows consumables in room
-    if "consumable" in rooms[currentRoom]:
-        print('You see a ' + rooms[currentRoom]['consumable'])
-        print("---------------------------")
-   
-    # Display message about if monster is alive when you are in the pantry
-    if currentRoom == 'Pantry' and 'death' in rooms['Cellar']:
-        print('There seems to be something lurking to the North..') 
-        print("---------------------------")
+def look():
+    global rooms
+    global currentRoom
+    # Displays items in current room, if any
+    if 'item' in rooms[currentRoom]:
+        print("You see a " + rooms[currentRoom]['item'])
+    # Displays consumables in current room, if any
+    elif 'consumable' in rooms[currentRoom]:
+        print("You see a " + rooms[currentRoom]['consumable'] + " you could eat")
+    else:
+        print("Theres nothing in here")
+    # Display which way you can go
+    if currentRoom == 'Hall':
+        print("You see the Kitchen to the South and the Dining Room to the East")
+    elif currentRoom == 'Kitchen':
+        print("You see the Hall to the North")
+    elif currentRoom == 'Dining Room':
+        print("You see the Hall to the West, Pantry to the North, and Garden to the South")
+    elif currentRoom == 'Pantry':
+        print("You see the Dining Room to the South and the Cellar to the North")
+        if 'death' in rooms['Cellar']:
+            print("There is something lurking in the Cellar")
+    elif currentRoom == 'Cellar':
+        print("You see the Pantry to the South")
+    elif currentRoom == 'Garden':
+        print("You see the Dining Room to the North")
 
 def hint():
     
@@ -224,6 +237,10 @@ while True and player == 'alive':
     # If the user needs a hint
     elif move[0] == 'hint':
         hint()
+
+    # If the user looks around room
+    elif move[0] == 'look':
+        look()
 
     # If the user inputs something incorrectly
     else:
