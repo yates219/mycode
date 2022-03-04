@@ -113,163 +113,193 @@ def combat():
             print(f"The monster hit you for {enemy_attack} damage!")
             if player_health <= 0:              # Kills you when you lose the fight
                 print("The monster killed you! Better get a weapon next time!")
-                player = 'dead'
+                player = 'dead' # Kills the player, ending the game
                 
-
             
 # Creates an inventory and consumed area, initially empty
 inventory = []
 consumed = []
 
-# A dictionary linking a room to other rooms
+# A dictionary linking a room to other rooms with various items
 rooms = {
 
             'Hall' : {
-                  'south' : 'Kitchen',
-                  'east'  : 'Dining Room',
+                'south' : 'Kitchen',
+                'east'  : 'Dining Room',
                      },
 
             'Kitchen' : {
-                  'north' : 'Hall',
-                  'item'  : 'knife',
-                        },
+                'north' : 'Hall',
+                'item'  : 'knife',
+                     },
             
             'Dining Room' : {
-                  'west' : 'Hall',
-                  'south': 'Garden',
-                  'item' : 'map',
-                  'north' : 'Pantry',
+                'west' : 'Hall',
+                'south': 'Garden',
+                'item' : 'map',
+                'north' : 'Pantry',
                             },
             
             'Garden' : {
-                  'north' : 'Dining Room',
-                  'consumable'  : 'deathberry'
-                       },
+                'north' : 'Dining Room',
+                'consumable'  : 'deathberry'
+                        },
             
             'Pantry' : {
-                  'south' : 'Dining Room',
-                  'north' : 'Cellar',
-                  'consumable' : 'cookie',
+                'south' : 'Dining Room',
+                'north' : 'Cellar',
+                'consumable' : 'cookie',
                        },
            
             'Cellar' : {
-                  'south' : 'Pantry',
-                  'death'  : 'monster'
+                'south' : 'Pantry',
+                'death'  : 'monster'
                        }
-         }
+        }
 
-# Start the player in the Hall
-currentRoom = 'Hall'
+# Defining our main function
+def main():
+   
+    global player
+    global currentRoom
+    # Start the player off in the Hall
+    currentRoom = 'Hall'
+    # Start the player alive so the while loop will begin
+    player = 'alive'
+    # Display instructions to player
+    showInstructions()
 
-player = 'alive'
+    # Loop forever until game is won or player is dead
+    while True and player == 'alive':
 
-showInstructions()
+        showStatus()
 
-# Loop forever
-while True and player == 'alive':
+        # Get the player's next 'move'
+        # .split() breaks it up into an list array
+        # eg typing 'go east' would give the list:
+        # ['go','east']
+        move = ''
+        while move == '':
+            move = input('>').lower()
+            print("---------------------------")
+        # Split allows an items to have a space on them
+        # Get golden key is returned ["get", "golden key"]          
+        move = move.lower().split(" ", 1)
 
-    showStatus()
-
-    # Get the player's next 'move'
-    # .split() breaks it up into an list array
-    # eg typing 'go east' would give the list:
-    # ['go','east']
-    move = ''
-    while move == '':
-        move = input('>').lower()
-        print("---------------------------")
-    # Split allows an items to have a space on them
-    # Get golden key is returned ["get", "golden key"]          
-    move = move.lower().split(" ", 1)
-
-    # If they type 'go' first
-    if move[0] == 'go':
-        
-        # Check that they are allowed wherever they want to go
-        if move[1] in rooms[currentRoom]:
-           
-            # Set the current room to the new room
-            currentRoom = rooms[currentRoom][move[1]]
-        
-        # There is no door (link) to the new room
-        else:
-            print('You can\'t go that way!')
+        # If they type 'go' first
+        if move[0] == 'go':
+            
+            # Check to see length of input (how many words types)
+            # If player doesn't give any input after typing 'go'
+            if len(move) < 2: 
+                print('Correctly type in which direction you want to go')
+                continue
+            
+            # Check that they are allowed wherever they want to go
+            if move[1] in rooms[currentRoom]:          
+                # Set the current room to the new room
+                currentRoom = rooms[currentRoom][move[1]]
+            
+            # If player doesn't type in correct direction or puts in a wrong direction
+            else:
+                print('You can\'t go that way!')
 
         # If they type 'get' first
-    elif move[0] == 'get' :
-        
-        # If the room contains an item, and the item is the one they want to get
-        if "item" in rooms[currentRoom] and move[1] in rooms[currentRoom]['item']:
+        elif move[0] == 'get' :
             
-            # Add the item to their inventory
-            inventory.append(move[1])
+            # Check to see length of input (how many words types)
+            # If player doesn't input anything after typing 'get'
+            if len(move) <2:
+                print('Correctly type in which item you want to get')
+                continue
+
+            # If the room contains an item, and the item is the one they want to get
+            if "item" in rooms[currentRoom] and move[1] in rooms[currentRoom]['item']:
             
-            # Display a helpful message
-            print(move[1].capitalize() + ' obtained!')
+                # Add the item to their inventory
+                inventory.append(move[1])
             
-            # Delete the item from the room
-            del rooms[currentRoom]['item']
+                # Display a helpful message
+                print(move[1].capitalize() + ' obtained!')
+            
+                # Delete the item from the room
+                del rooms[currentRoom]['item']
     
-        # Otherwise, if the item isn't there to get
-        else:
-            # Tell them they can't get it
-            print('Can\'t get ' + move[1] + '!')
+                
+            # Otherwise, if the item isn't there to get
+            else:
+                # Tell them they can't get it
+                print('Can\'t get that!')
       
-    # If they type eat
-    elif move[0] == 'eat':
-        
-        # If the room contains a consumable
-        if 'consumable' in rooms[currentRoom] and move[1] in rooms[currentRoom]['consumable']:
-        
-            # Add consumable to consumed
-            consumed.append(move[1])
+        # If they type eat
+        elif move[0] == 'eat':
             
-            # Tell them they consumed
-            print(move[1].capitalize() + ' eaten!')
+            # Check to see length of input (how many words types)
+            # If player doesn't input anything after typing 'eat'
+            if len(move) <2:
+                print('Correctly type in what you want to eat')
+                continue
             
-            # Remove the consumable from room
-            del rooms[currentRoom]['consumable']
+            # If the room contains a consumable
+            if 'consumable' in rooms[currentRoom] and move[1] in rooms[currentRoom]['consumable']:
+        
+                # Add consumable to consumed
+                consumed.append(move[1])
+            
+                # Tell them they consumed
+                print(move[1].capitalize() + ' consumed!')
+            
+                # Remove the consumable from room
+                del rooms[currentRoom]['consumable']
      
-        # If they aren't able to consume the item
-        else:
-            print('Can\'t eat ' + move[1] + '!')
+            # If they aren't able to consume the item
+            else:
+                print('Can\'t eat that!')
     
-    # If the user needs a hint
-    elif move[0] == 'hint':
-        hint()
+        # If the user needs a hint
+        elif move[0] == 'hint':
+            hint()
 
-    # If the user looks around room
-    elif move[0] == 'look':
-        look()
+        # If the user looks around room
+        elif move[0] == 'look':
+            look()
 
-    # If the user inputs something incorrectly
-    else:
-        print("I don't recognize that command")
-
-    # Dying from eating deathberry...duh
-    if 'deathberry' in consumed:
-        print('--------------------------')
-        print('WHY WOULD YOU EAT A DEATHBERRY?!?! YOU DIED!')
-        break
-
-    # Define how a player can win
-    if currentRoom == 'Garden' and 'key' in inventory and 'map' in inventory and 'death' not in rooms['Cellar'] and 'cookie' in consumed:
-        print('You killed the Monster and escaped the house with the ultra rare key and map...all while getting a snack. YOU WIN!')
-        break
-
-    # Fighting the monster 
-    elif currentRoom == 'Cellar' and 'death' in rooms['Cellar']:
-        fight = input('A monster appeared! Do you wish to fight or run? ').lower()
-        if fight == 'fight':
-            combat()
-            if player == 'alive':
-                del rooms['Cellar']['death']
-                pickup = input("Hmm the monster dropped something...Would you like to pick it up? (Yes/No) ").lower()
-                if pickup == 'yes':
-                    print("Key obtained!")
-                    inventory.append('key')
-                else:
-                    rooms['Cellar'].update({'item':'key'})
+        # If the user inputs something incorrectly
         else:
-            print('You successfully escaped!')
-            currentRoom = 'Pantry'
+            print("I don't recognize that command")
+
+        # Dying from eating deathberry...duh
+        if 'deathberry' in consumed:
+            print('--------------------------')
+            print('WHY WOULD YOU EAT A DEATHBERRY?!?! YOU DIED!')
+            break
+
+        # Define how a player can win. You must kill the monster, eat the cookie, obtain the key and map, and go to the Garden.
+        if currentRoom == 'Garden' and 'key' in inventory and 'map' in inventory and 'death' not in rooms['Cellar'] and 'cookie' in consumed:
+            print('You killed the Monster and escaped the house with the ultra rare key and map...all while getting a snack. YOU WIN!')
+            break
+
+        # Fighting the monster 
+        elif currentRoom == 'Cellar' and 'death' in rooms['Cellar']:
+            fight = input('A monster appeared! Do you wish to fight or run? ').lower() # Prompt player if they want to fight or run
+            if fight == 'fight': # If player wants to fight
+                combat() # Initiates combat
+                if player == 'alive': # If player wins the fight, remove monster and ask player to loot 
+                    del rooms['Cellar']['death']
+                    if 'death' not in rooms['Cellar']:
+                        pickup = input("Hmm the monster dropped something...Would you like to pick it up? (Yes/No) ").lower()
+                    if pickup == 'yes': # If player decides to pick up key it will add to inventory 
+                        print("Key obtained!")
+                        inventory.append('key')
+                    else: # If player does not pick up key, it will leave the key in the Cellar so you can come back to grab it
+                        rooms['Cellar'].update({'item':'key'})
+            elif fight == 'run':
+                print('You successfully escaped!')
+                currentRoom = 'Pantry'
+            else:
+                print('I don\'t recognize that command, I placed you back into the Pantry for safety')
+                currentRoom = 'Pantry'
+                
+
+if __name__ == "__main__":
+    main()
