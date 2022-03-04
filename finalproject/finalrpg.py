@@ -31,6 +31,7 @@ def showStatus():
     print('Consumed: ' + str(consumed))
 
 def look():
+    # Call global variables to work with main() function
     global rooms
     global currentRoom
     # Displays items in current room, if any
@@ -81,6 +82,7 @@ def hint():
 
 # Implements combat
 def combat():
+    # Call global player to allow continuous loop in main() function as well as stopping when player dies
     global player
     # Starting health for player and enemy
     player_health = 50
