@@ -14,7 +14,7 @@ Commands:
     go [direction] (North, South, East, West)
     look (See what is in current room)
     get [item]
-    eat [item]
+    eat [consumable]
     hint (Type at anytime for a hint)
 ''')
 
