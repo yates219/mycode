@@ -4,9 +4,10 @@
 
 import random
 import time
+import os
 
 def showInstructions():
-    # Print a main menu and the commands
+    # Print a main menu as well as a help command
     print('''
 RPG Game
 ========
@@ -16,6 +17,7 @@ Commands:
     get [item]
     eat [consumable]
     hint (Type at anytime for a hint)
+    help (Display these instructions at any time)
 ''')
 
 def showStatus():
@@ -29,6 +31,12 @@ def showStatus():
     
     # Print any items consumed
     print('Consumed: ' + str(consumed))
+
+def clear_screen():
+    if os.name == 'posix':
+        os.system('clear')
+    else:
+        os.system('cls')
 
 def look():
     # Call global variables to work with main() function
@@ -188,6 +196,7 @@ def main():
         # Get golden key is returned ["get", "golden key"]          
         move = move.lower().split(" ", 1)
 
+        clear_screen()
         # If they type 'go' first
         if move[0] == 'go':
             
@@ -266,6 +275,10 @@ def main():
         elif move[0] == 'look':
             look()
 
+        # If the user inputs help
+        elif move[0] == 'help':
+            showInstructions()
+
         # If the user inputs something incorrectly
         else:
             print("I don't recognize that command")
@@ -295,12 +308,14 @@ def main():
                         inventory.append('key')
                     else: # If player does not pick up key, it will leave the key in the Cellar so you can come back to grab it
                         rooms['Cellar'].update({'item':'key'})
+                    
             elif fight == 'run':
                 print('You successfully escaped!')
                 currentRoom = 'Pantry'
             else:
                 print('I don\'t recognize that command, I placed you back into the Pantry for safety')
                 currentRoom = 'Pantry'
+        
                 
 
 if __name__ == "__main__":

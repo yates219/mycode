@@ -6,6 +6,7 @@
   - name: New module
     my_new_test_module:
       name: Chester
+      color: blue
       augment: true
     register: results
 

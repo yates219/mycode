@@ -54,6 +54,7 @@ def run_module():
     ## define the parameters that a user may pass in
     module_args = dict(
             name=dict(type='str', required=True),
+            color=dict(type='str', required=True),
             augment=dict(type='bool', default=False)
         )
 
@@ -92,8 +93,9 @@ def run_module():
     ## here is where we test if the user passed TRUE or FALSE for the param change:
     if module.params['augment'] == False:
         result['message'] = module.params['name']
+    
     else:
-        result['message'] = module.params['name'] + " is a wild and crazy guy!!! -- or so says Dan Akroyd."
+        result['message'] = module.params['name'] + "'s favorite color is " + module.params['color']
 
     if module.params['name'] == 'fail me':
         module.fail_json(msg="You requested this to fail...", **result)
